@@ -24,6 +24,10 @@ LLMChat::LLMChat(QWidget *parent)
     // if (!connected) {
     //     qDebug() << "ERROR: Failed to connect toolButton_8 clicked signal!";
     // }
+
+    QAction *searchAction = new QAction(this);
+    searchAction->setIcon(QIcon(":/pic/img/66@2x.png"));
+    ui->lineEdit->addAction(searchAction, QLineEdit::LeadingPosition);
 }
 
 

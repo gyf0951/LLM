@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Widget</class>
- <widget class="QWidget" name="Widget">
+ <class>welcomepage</class>
+ <widget class="QWidget" name="welcomepage">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Widget</string>
+   <string>Form</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="spacing">
@@ -114,32 +114,26 @@ border-radius: 8px;
          </size>
         </property>
         <property name="cursor">
-         <cursorShape>ArrowCursor</cursorShape>
+         <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="styleSheet">
          <string notr="true">/* border: 1px solid #999; */
-QToolButton {
-    /* * 正常状态：
-     * 1. 背景色设为透明
-     * 2. 移除默认边框
-     */
-    background-color: transparent;
-    border: none;
-    border-radius: 8px; /* 保留您的圆角 */
-	padding-top: 5px;
-}
-QToolButton:hover {
-    background-color: #EBEBEB;
-border: 1px solid #CCCCCC;
-padding-top: 5px;
-}</string>
+/*background-color: #0076FF;  */
+border-radius: 8px;
+ background: qlineargradient( 
+x1:0, y1:0, x2:0, y2:1,             /* 从上到下渐变 */  
+stop:0 rgba(0, 118, 255, 255),     /* 顶部：#0076FF，不透明 */ 
+ stop:1 rgba(0, 118, 255, 178)      /* 底部：#0076FF，约70%不透明 */ 
+     );
+color: white;
+padding-top: 5px;</string>
         </property>
         <property name="text">
          <string>首页</string>
         </property>
         <property name="icon">
          <iconset resource="resource.qrc">
-          <normaloff>:/pic/img/切图 79@2x.png</normaloff>:/pic/img/切图 79@2x.png</iconset>
+          <normaloff>:/pic/img/切图 58@2x.png</normaloff>:/pic/img/切图 58@2x.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -405,126 +399,145 @@ padding-top: 5px;
      <property name="styleSheet">
       <string notr="true">background-color: rgb(243, 244, 246);</string>
      </property>
-     <widget class="QToolButton" name="newChatBtn">
+     <widget class="QWidget" name="widget_5" native="true">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>10</x>
         <y>10</y>
-        <width>141</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>11</pointsize>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="cursor">
-       <cursorShape>PointingHandCursor</cursorShape>
-      </property>
-      <property name="layoutDirection">
-       <enum>Qt::LeftToRight</enum>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">border: 1px solid #999;
-        border-radius: 5px;</string>
-      </property>
-      <property name="text">
-       <string>新建对话</string>
-      </property>
-      <property name="icon">
-       <iconset resource="resource.qrc">
-        <normaloff>:/pic/4115237-add-plus_114047.png</normaloff>:/pic/4115237-add-plus_114047.png</iconset>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>27</width>
-        <height>27</height>
-       </size>
-      </property>
-      <property name="toolButtonStyle">
-       <enum>Qt::ToolButtonTextBesideIcon</enum>
-      </property>
-      <property name="autoRaise">
-       <bool>false</bool>
-      </property>
-     </widget>
-     <widget class="QToolButton" name="toolButton_8">
-      <property name="geometry">
-       <rect>
-        <x>170</x>
-        <y>20</y>
-        <width>30</width>
-        <height>30</height>
+        <width>221</width>
+        <height>734</height>
        </rect>
       </property>
       <property name="minimumSize">
        <size>
-        <width>30</width>
-        <height>30</height>
+        <width>221</width>
+        <height>734</height>
        </size>
       </property>
-      <property name="cursor">
-       <cursorShape>PointingHandCursor</cursorShape>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">border-radius: 8px;</string>
-      </property>
-      <property name="text">
-       <string>...</string>
-      </property>
-      <property name="icon">
-       <iconset resource="resource.qrc">
-        <normaloff>:/pic/img/切图 65@2x.png</normaloff>:/pic/img/切图 65@2x.png</iconset>
-      </property>
-      <property name="iconSize">
+      <property name="maximumSize">
        <size>
-        <width>27</width>
-        <height>27</height>
+        <width>221</width>
+        <height>16777215</height>
        </size>
       </property>
-     </widget>
-     <widget class="QListWidget" name="sessionList">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>220</y>
-        <width>201</width>
-        <height>501</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
       <property name="styleSheet">
-       <string notr="true">border: none</string>
+       <string notr="true">background-color: rgb(243, 244, 246);</string>
       </property>
+      <widget class="QToolButton" name="toolButton_8">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>10</y>
+         <width>141</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border: 1px solid #999;
+        border-radius: 5px;</string>
+       </property>
+       <property name="text">
+        <string>新建对话</string>
+       </property>
+       <property name="icon">
+        <iconset resource="resource.qrc">
+         <normaloff>:/pic/4115237-add-plus_114047.png</normaloff>:/pic/4115237-add-plus_114047.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>27</width>
+         <height>27</height>
+        </size>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+       <property name="autoRaise">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QToolButton" name="toggleBtn">
+       <property name="geometry">
+        <rect>
+         <x>180</x>
+         <y>20</y>
+         <width>30</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border-radius: 8px;</string>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="resource.qrc">
+         <normaloff>:/pic/img/切图 65@2x.png</normaloff>:/pic/img/切图 65@2x.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>27</width>
+         <height>27</height>
+        </size>
+       </property>
+      </widget>
      </widget>
     </widget>
    </item>
    <item>
-    <widget class="QFrame" name="frame_3">
+    <widget class="QWidget" name="widget_2" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="minimumSize">
       <size>
-       <width>1042</width>
+       <width>911</width>
        <height>734</height>
       </size>
      </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
      </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
+     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1,0,3">
       <property name="leftMargin">
        <number>0</number>
       </property>
       <property name="topMargin">
-       <number>0</number>
+       <number>19</number>
       </property>
       <property name="rightMargin">
        <number>0</number>
@@ -532,8 +545,8 @@ padding-top: 5px;
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item>
-       <widget class="QFrame" name="frame_6">
+      <item alignment="Qt::AlignVCenter">
+       <widget class="QFrame" name="frame_4">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -542,7 +555,7 @@ padding-top: 5px;
         </property>
         <property name="minimumSize">
          <size>
-          <width>0</width>
+          <width>1000</width>
           <height>50</height>
          </size>
         </property>
@@ -552,15 +565,15 @@ padding-top: 5px;
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <property name="spacing">
-          <number>9</number>
-         </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
          <property name="topMargin">
-          <number>17</number>
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
          </property>
          <item>
-          <widget class="QToolButton" name="toolButton_9">
+          <widget class="QToolButton" name="toggleBtn_2">
            <property name="minimumSize">
             <size>
              <width>30</width>
@@ -595,7 +608,7 @@ padding-top: 5px;
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer">
+          <spacer name="horizontalSpacer_3">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -608,6 +621,67 @@ padding-top: 5px;
           </spacer>
          </item>
          <item>
+          <widget class="QWidget" name="widget_6" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>330</width>
+             <height>45</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>350</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <widget class="QLineEdit" name="lineEdit">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>0</y>
+              <width>311</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>311</width>
+              <height>41</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>311</width>
+              <height>41</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QLineEdit {
+
+    border: 1px solid #CCCCCC;
+
+  
+    border-radius: 20px; 
+
+  padding-left: 3px;  
+
+    /* (可选) 设置文字和背景色 */
+    background-color: white;
+    color: #333333;
+}</string>
+            </property>
+            <property name="placeholderText">
+             <string>查看智能体</string>
+            </property>
+           </widget>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
           <widget class="QToolButton" name="toolButton_7">
            <property name="minimumSize">
             <size>
@@ -634,8 +708,8 @@ padding-top: 5px;
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="QToolButton" name="toolButton_10">
+         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+          <widget class="QToolButton" name="toolButton_9">
            <property name="minimumSize">
             <size>
              <width>30</width>
@@ -665,11 +739,33 @@ padding-top: 5px;
        </widget>
       </item>
       <item>
-       <widget class="QFrame" name="frame_4">
+       <spacer name="verticalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>50</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+       <widget class="QWidget" name="widget_4" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>1042</width>
-          <height>684</height>
+          <width>1041</width>
+          <height>470</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -678,25 +774,149 @@ padding-top: 5px;
           <height>16777215</height>
          </size>
         </property>
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
+        <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <widget class="ChatWidget" name="listWidget">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
+          <widget class="QFrame" name="horizontalFrame">
            <property name="minimumSize">
             <size>
-             <width>951</width>
-             <height>442</height>
+             <width>20</width>
+             <height>120</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>120</height>
+            </size>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <property name="spacing">
+             <number>30</number>
+            </property>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>200</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>22</pointsize>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="pixmap">
+               <pixmap resource="resource.qrc">:/pic/交小科logo2.png</pixmap>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QFrame" name="frame_3">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>60</height>
+            </size>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QLabel" name="label_3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>40</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>15555555</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>14</pointsize>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>我可以帮你答疑、分析、写作、提建议，请把你的任务交给我吧~</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+          <widget class="QWidget" name="widget" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>980</width>
+             <height>213</height>
             </size>
            </property>
            <property name="maximumSize">
@@ -705,108 +925,20 @@ padding-top: 5px;
              <height>16777215</height>
             </size>
            </property>
-           <property name="styleSheet">
-            <string notr="true">/* border: 1px solid gray;设置边框的粗细，以及颜色 */
-border-radius: 10px;/*设置圆角的大小*/
-background: transparent;</string>
-           </property>
-           <property name="spacing">
-            <number>5</number>
-           </property>
-          </widget>
-         </item>
-         <item alignment="Qt::AlignHCenter">
-          <widget class="QWidget" name="widget" native="true">
-           <property name="minimumSize">
-            <size>
-             <width>991</width>
-             <height>171</height>
-            </size>
-           </property>
-           <widget class="QFrame" name="frame">
-            <property name="geometry">
-             <rect>
-              <x>800</x>
-              <y>90</y>
-              <width>31</width>
-              <height>20</height>
-             </rect>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>31</width>
-              <height>20</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>20</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">color: rgb(231, 231, 231);</string>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::VLine</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Plain</enum>
-            </property>
-            <property name="lineWidth">
-             <number>2</number>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_3">
-            <property name="geometry">
-             <rect>
-              <x>700</x>
-              <y>80</y>
-              <width>38</width>
-              <height>38</height>
-             </rect>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>38</width>
-              <height>38</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>38</width>
-              <height>38</height>
-             </size>
-            </property>
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">border-radius: 19px; 
-color:white;</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset resource="resource.qrc">
-              <normaloff>:/pic/cd5da85fac8a117d.png</normaloff>:/pic/cd5da85fac8a117d.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>25</width>
-              <height>25</height>
-             </size>
-            </property>
-           </widget>
            <widget class="QPushButton" name="pushButton">
             <property name="geometry">
              <rect>
-              <x>840</x>
-              <y>80</y>
+              <x>680</x>
+              <y>160</y>
               <width>38</width>
               <height>38</height>
              </rect>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
             <property name="minimumSize">
              <size>
@@ -827,14 +959,14 @@ color:white;</string>
              <string notr="true">border-radius: 19px;  /* 半径值，设置为宽度/高度的一半 */
 /*  border: 2px solid #999; */
 color: white;
-background-color: rgb(224, 224, 224);</string>
+/*background-color: rgb(224, 224, 224); */</string>
             </property>
             <property name="text">
              <string/>
             </property>
             <property name="icon">
              <iconset resource="resource.qrc">
-              <normaloff>:/pic/arrow1.png</normaloff>:/pic/arrow1.png</iconset>
+              <normaloff>:/pic/img/切图 72@2x.png</normaloff>:/pic/img/切图 72@2x.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -846,8 +978,8 @@ background-color: rgb(224, 224, 224);</string>
            <widget class="QPushButton" name="pushButton_2">
             <property name="geometry">
              <rect>
-              <x>750</x>
-              <y>80</y>
+              <x>580</x>
+              <y>160</y>
               <width>38</width>
               <height>38</height>
              </rect>
@@ -867,6 +999,12 @@ background-color: rgb(224, 224, 224);</string>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;上传附件&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;上传附件&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
             <property name="styleSheet">
              <string notr="true">border-radius: 19px; 
 color:white;</string>
@@ -876,7 +1014,7 @@ color:white;</string>
             </property>
             <property name="icon">
              <iconset resource="resource.qrc">
-              <normaloff>:/pic/landscape_114863.png</normaloff>:/pic/landscape_114863.png</iconset>
+              <normaloff>:/pic/img/切图 70@2x.png</normaloff>:/pic/img/切图 70@2x.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -885,13 +1023,83 @@ color:white;</string>
              </size>
             </property>
            </widget>
-           <widget class="QTextEdit" name="chatEdit">
+           <widget class="QPushButton" name="pushButton_3">
             <property name="geometry">
              <rect>
-              <x>40</x>
+              <x>530</x>
+              <y>160</y>
+              <width>38</width>
+              <height>38</height>
+             </rect>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>38</width>
+              <height>38</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>38</width>
+              <height>38</height>
+             </size>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;上传附件&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;上传附件&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border-radius: 19px; 
+color:white;</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="resource.qrc">
+              <normaloff>:/pic/img/切图 71@2x.png</normaloff>:/pic/img/切图 71@2x.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>25</width>
+              <height>25</height>
+             </size>
+            </property>
+           </widget>
+           <widget class="QFrame" name="frame">
+            <property name="geometry">
+             <rect>
+              <x>630</x>
+              <y>170</y>
+              <width>31</width>
+              <height>20</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: rgb(231, 231, 231);</string>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::VLine</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
+            </property>
+            <property name="lineWidth">
+             <number>2</number>
+            </property>
+           </widget>
+           <widget class="QTextEdit" name="textEdit">
+            <property name="geometry">
+             <rect>
+              <x>30</x>
               <y>20</y>
               <width>931</width>
-              <height>120</height>
+              <height>191</height>
              </rect>
             </property>
             <property name="sizePolicy">
@@ -903,48 +1111,58 @@ color:white;</string>
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>120</height>
+              <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>931</width>
-              <height>120</height>
+              <width>16777215</width>
+              <height>16777215</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="styleSheet">
-             <string notr="true">border: 1px solid gray;/*设置边框的粗细，以及颜色*/
-border-radius: 10px;/*设置圆角的大小*/
-padding: 0 8px;/*如果没有内容光标在开始往后移动0.8像素点*/
-background: white;
-   </string>
+             <string notr="true">border: 2.5px solid #999;
+        border-radius: 10px;
+        background: white;
+        padding: 4px;</string>
             </property>
             <property name="placeholderText">
              <string>给交小科发送消息</string>
             </property>
            </widget>
-           <zorder>chatEdit</zorder>
-           <zorder>frame</zorder>
+           <zorder>textEdit</zorder>
            <zorder>pushButton_3</zorder>
-           <zorder>pushButton</zorder>
            <zorder>pushButton_2</zorder>
+           <zorder>frame</zorder>
+           <zorder>pushButton</zorder>
           </widget>
          </item>
         </layout>
        </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>45</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>ChatWidget</class>
-   <extends>QListWidget</extends>
-   <header location="global">chatwidget.h</header>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="resource.qrc"/>
  </resources>

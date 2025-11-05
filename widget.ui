@@ -428,8 +428,17 @@ border-radius: 8px;</string>
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
       <property name="topMargin">
-       <number>6</number>
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
       </property>
       <item>
        <widget class="QFrame" name="frame_6">
@@ -493,12 +502,18 @@ border-radius: 8px;</string>
         </layout>
        </widget>
       </item>
-      <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+      <item>
        <widget class="QFrame" name="frame_4">
         <property name="minimumSize">
          <size>
-          <width>1001</width>
-          <height>701</height>
+          <width>1042</width>
+          <height>684</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
          </size>
         </property>
         <property name="frameShape">
@@ -508,15 +523,18 @@ border-radius: 8px;</string>
          <enum>QFrame::Raised</enum>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
-         <property name="spacing">
-          <number>0</number>
-         </property>
          <item>
           <widget class="ChatWidget" name="listWidget">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="minimumSize">
             <size>
              <width>951</width>
-             <height>450</height>
+             <height>442</height>
             </size>
            </property>
            <property name="maximumSize">
@@ -526,7 +544,7 @@ border-radius: 8px;</string>
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">/*border: 1px solid gray;设置边框的粗细，以及颜色*/
+            <string notr="true">/* border: 1px solid gray;设置边框的粗细，以及颜色 */
 border-radius: 10px;/*设置圆角的大小*/
 background: transparent;</string>
            </property>
@@ -535,7 +553,7 @@ background: transparent;</string>
            </property>
           </widget>
          </item>
-         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+         <item alignment="Qt::AlignHCenter">
           <widget class="QWidget" name="widget" native="true">
            <property name="minimumSize">
             <size>

@@ -1,8 +1,7 @@
 #include "welcomepage.h"
 #include "ui_welcomepage.h"
-
-
-
+#include <QGraphicsDropShadowEffect>
+#include <QAction>
 
 
 welcomepage::welcomepage(QWidget *parent)
@@ -34,14 +33,31 @@ welcomepage::welcomepage(QWidget *parent)
 
     //发送按钮使能
     ui->pushButton->setEnabled(false);
+    ui->pushButton->setIcon(QIcon());
+    ui->pushButton->setStyleSheet(
+        "QPushButton {"
+        "    border-image: url(\"E:/QtProject/LLM/pic/img/切图 72@2x.png\");"
+        "    border-radius: 19px;"
+        "}"
+        );
     connect(ui->textEdit, &QTextEdit::textChanged, this, [this] {
         if(ui->textEdit->document()->isEmpty()){
             ui->pushButton->setEnabled(false);
-            ui->pushButton->setStyleSheet("QPushButton {background-color: rgb(224, 224, 224); color: white;border-radius: 19px}");
+            ui->pushButton->setStyleSheet(
+                "QPushButton {"
+                "    border-image: url(\"E:/QtProject/LLM/pic/img/切图 72@2x.png\");"
+                "    border-radius: 19px;"
+                "}"
+                );
         }
         else{
-            ui->pushButton->setEnabled(!ui->textEdit->document()->isEmpty());
-            ui->pushButton->setStyleSheet("QPushButton { background-color: black; color: white;border-radius: 19px}");
+            ui->pushButton->setEnabled(true);
+            ui->pushButton->setStyleSheet(
+                "QPushButton {"
+                "    border-image: url(\"E:/QtProject/LLM/pic/img/切图 77@2x.png\");"
+                "    border-radius: 19px;"
+                "}"
+                );
         }
     });
 
@@ -60,7 +76,11 @@ welcomepage::welcomepage(QWidget *parent)
 
 
 
-    // 让 toggleBtn 的 y 坐标与 toggleBtn_2 一致
+    QAction *searchAction = new QAction(this);
+    searchAction->setIcon(QIcon(":/pic/img/66@2x.png"));
+    ui->lineEdit->addAction(searchAction, QLineEdit::LeadingPosition);
+
+
 
 }
 
