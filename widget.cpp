@@ -2,6 +2,8 @@
 #include "ui_widget.h"
 
 #include <QScrollBar>
+#include "HistoryUploader.h"
+#include <QDateTime>
 
 Widget::Widget(Chat *chatInstance,QWidget *parent)
     : QWidget(parent)
@@ -29,68 +31,40 @@ Widget::Widget(Chat *chatInstance,QWidget *parent)
     //设置过滤器
     ui->chatEdit->installEventFilter(this);
     ui->chatEdit->setFocus();
-    //摁键使能
+    //发送按钮使能
     ui->pushButton->setEnabled(false);
+    ui->pushButton->setIcon(QIcon());
+    ui->pushButton->setStyleSheet(
+        "QPushButton {"
+        "    border-image: url(\"E:/QtProject/LLM/pic/img/切图 72@2x.png\");"
+        "    border-radius: 19px;"
+        "}"
+        );
     connect(ui->chatEdit, &QTextEdit::textChanged, this, [this] {
         if(ui->chatEdit->document()->isEmpty()){
-           ui->pushButton->setEnabled(false);
-           ui->pushButton->setStyleSheet("QPushButton {background-color: rgb(224, 224, 224); color: white;border-radius: 19px}");
+            ui->pushButton->setEnabled(false);
+            ui->pushButton->setStyleSheet(
+                "QPushButton {"
+                "    border-image: url(\"E:/QtProject/LLM/pic/img/切图 72@2x.png\");"
+                "    border-radius: 19px;"
+                "}"
+                );
         }
         else{
             ui->pushButton->setEnabled(true);
-            ui->pushButton->setStyleSheet("QPushButton { background-color: black; color: white;border-radius: 19px}");
+            ui->pushButton->setStyleSheet(
+                "QPushButton {"
+                "    border-image: url(\"E:/QtProject/LLM/pic/img/切图 77@2x.png\");"
+                "    border-radius: 19px;"
+                "}"
+                );
         }
-
-
     });
 
-    // 连接 Chat 的信号
-    //connect(chat, &Chat::messageReceived, this, &Widget::onMessageReceived);
     connect(chat, &Chat::messageReceived, this, [=](const QString &reply){
-        // 如果列表为空，或者最后一条不是 AI 消息（isMe=false），则新建一条 item
-        // bool needNewItem = false;
-        // if (ui->listWidget->count() == 0) {
-        //     needNewItem = true;
-        // }
-        // else{
-        //     QListWidgetItem *lastItem = ui->listWidget->item(ui->listWidget->count() - 1);
-        //     if (!lastItem->data(Qt::UserRole).toBool()) { // false = AI
-        //         needNewItem = false; // 使用最后一条
-        //     } else {
-        //         needNewItem = true; // 新建一条
-        //     }
-        // }
-        // QListWidgetItem *lastItem = nullptr;
-        // if (needNewItem) {
-        //     ui->listWidget->addMessage(reply, false); // 新建一条消息
-        //     lastItem = ui->listWidget->item(ui->listWidget->count() - 1);
-        //     lastItem->setData(Qt::UserRole, false); // 标记为 AI 消息
-        // } else {
-        //     lastItem = ui->listWidget->item(ui->listWidget->count() - 1);
-        //     // 追加到现有 item 文本
-        //     QString currentText = lastItem->text();
-        //     currentText += reply; // 追加片段
-        //     lastItem->setText(currentText);
-        // }
-
-        // // 自动滚动到底部
-        // ui->listWidget->scrollToBottom();
-
-        // //  保存流式回复（拼接到同一条消息）
-        // for (ChatSession &s : sessions) {
-        //     if (s.id == currentSessionId) {
-        //         // 如果当前AI还没在会话里加入一条，就追加新条目
-        //         if (s.messages.isEmpty() || s.messages.last().startsWith("User:")) {
-        //             s.messages.append(reply);
-        //         } else {
-        //             s.messages.last().append(reply);
-        //         }
-        //         break;
-        //     }
-        // }
-
-        // qDebug() << "AI 回复:" << reply;
         ui->listWidget->appendToLastMessage(reply, false); // false = AI 消息
+
+        currentAnswerBuffer.append(reply); // 拼接完整回答
 
         // 保存流式回复（拼接到同一条消息）
         for (ChatSession &s : sessions) {
@@ -105,8 +79,27 @@ Widget::Widget(Chat *chatInstance,QWidget *parent)
             }
         }
 
-        qDebug() << "AI 回复:" << reply;
+        //qDebug() << "AI 回复:" << reply;
+
+
+
     });
+
+    connect(chat, &Chat::finished, this, [=](){
+        qDebug() << "完整回答为：" << currentAnswerBuffer;
+
+        // 历史记录上传到数据库
+            QString userId = "13299501181";
+            QString modelType = "jxkJxkChat";
+            QString question = w_msg;
+            QString answer = currentAnswerBuffer;
+            QString now = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+            uploader->uploadRecord(userId, modelType, question, answer, before, now);
+
+
+        currentAnswerBuffer.clear();
+    });
+
     connect(chat, &Chat::errorOccurred, this, [=](const QString &err){
         ui->listWidget->addMessage("❌ 请求失败: " + err, false);
     });
@@ -133,6 +126,18 @@ Widget::Widget(Chat *chatInstance,QWidget *parent)
         "QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height:0; }"
         );
 
+
+
+    uploader = new HistoryUploader(this);
+    connect(uploader, &HistoryUploader::uploadSuccess, this, [](){
+        qDebug() << "历史记录上传成功 ";
+    });
+    connect(uploader, &HistoryUploader::uploadFailed, this, [](const QString &err){
+        qDebug() << "历史记录上传失败 " << err;
+    });
+
+    //获取历史记录
+    uploader->fetchRecords("13299501181");
 
 }
 
@@ -266,6 +271,21 @@ void Widget::receiveMessageFromWelcome(const QString &msg)
     ui->chatEdit->toPlainText();
     chat->sendMessage(msg);
 
+    //消息同步到历史记录里
+    w_msg = msg;
+    before = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+
+}
+
+
+void Widget::receiveMessageFromLLM(const QString &msg)
+{
+    if (msg.isEmpty()) return;
+
+    ui->listWidget->addMessage(msg,true);
+    ui->chatEdit->clear();
+    ui->chatEdit->toPlainText();
+    chat->sendMessage(msg);
 }
 
 

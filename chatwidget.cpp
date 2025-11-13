@@ -1,169 +1,202 @@
 #include "ChatWidget.h"
-#include <QPainter>
-#include <QFontMetrics>
+#include <QTextBrowser>
+#include <QHBoxLayout>
 #include <QScrollBar>
-
-ChatDelegate::ChatDelegate(QObject *parent)
-    : QStyledItemDelegate(parent) {}
-
-void ChatDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
-                         const QModelIndex &index) const
-{
-    painter->save();
-
-    QString text = index.data(Qt::DisplayRole).toString();
-    bool isMe    = index.data(Qt::UserRole).toBool();
-
-    QFontMetrics fm(option.font);
-    // 列表项的可用宽度 (减去一点边距)
-    int itemWidth = option.rect.width() - 20;
-    // 气泡的最大宽度 (例如70%)
-    int maxWidth = itemWidth * 0.7;
-
-    // <-- FIX 1: 使用 QRect(..., 0) 来表示无限高度，而不是 1000
-    QRect textRect = fm.boundingRect(QRect(0, 0, maxWidth, 0),
-                                     Qt::TextWordWrap, text);
-
-    if (isMe) {
-        // 用户发送的消息
-        int bubbleWidth  = textRect.width() + 2 * m_paddingH;
-        int bubbleHeight = textRect.height() + 2 * m_paddingV;
-
-        // 应用 m_marginV
-        QPoint bubbleTopRight = option.rect.topRight() - QPoint(10, 0);
-        bubbleTopRight.setY(bubbleTopRight.y() + m_marginV); // <-- FIX 2
-
-        QRect bubbleRect(0, 0, bubbleWidth, bubbleHeight);
-        bubbleRect.moveTopRight(bubbleTopRight);
-
-        // 绘制气泡
-        QColor bubbleColor("#95EC69");
-        painter->setBrush(bubbleColor);
-        painter->setPen(Qt::NoPen);
-        painter->drawRoundedRect(bubbleRect, 10, 10);
-
-        // 绘制文字（居中在气泡里）
-        int offsetY = (bubbleRect.height() - textRect.height()) / 2;
-        QRect textArea(bubbleRect.left() + m_paddingH,
-                       bubbleRect.top() + offsetY,
-                       textRect.width(),
-                       textRect.height());
-
-        painter->setPen(Qt::black);
-        painter->drawText(textArea, Qt::TextWordWrap | Qt::AlignLeft, text);
-
-    } else {
-        // AI 返回的消息
-        // <-- FIX 2: 应用 m_marginV
-        QRect textArea(option.rect.left() + 10,
-                       option.rect.top() + m_marginV,
-                       textRect.width(),
-                       textRect.height());
-
-        painter->setPen(Qt::black);
-        painter->drawText(textArea, Qt::TextWordWrap | Qt::AlignLeft, text);
-    }
-
-    painter->restore();
-}
-
-QSize ChatDelegate::sizeHint(const QStyleOptionViewItem &option,
-                             const QModelIndex &index) const
-{
-    QString text = index.data(Qt::DisplayRole).toString();
-    QFontMetrics fm(option.font);
-
-    int itemWidth = option.rect.width() - 20;
-    int maxWidth = itemWidth * 0.7;
-
-    // <-- FIX 1: 使用 QRect(..., 0) 来表示无限高度
-    QRect textRect = fm.boundingRect(QRect(0, 0, maxWidth, 0),
-                                     Qt::TextWordWrap, text);
-
-    int finalHeight;
-    bool isMe = index.data(Qt::UserRole).toBool();
-
-    if (isMe) {
-        // 气泡高度 = 文字高度 + 上下内边距
-        finalHeight = textRect.height() + 2 * m_paddingV;
-    } else {
-        // 纯文本高度
-        finalHeight = textRect.height();
-    }
-
-    // <-- FIX 3: 最终高度 = 内容高度 + 上下外边距
-    finalHeight += (2 * m_marginV);
-
-    // 返回 QListWidget 应该分配的完整大小
-    return QSize(option.rect.width(), finalHeight);
-}
+#include <QDebug>
+#include <QResizeEvent>
 
 
 ChatWidget::ChatWidget(QWidget *parent)
     : QListWidget(parent)
+    ,m_lastAiItem(nullptr)
 {
     // 样式表可以简化，背景色等在父窗口设置
-    setStyleSheet("QListWidget { border: none; }");
-    setItemDelegate(new ChatDelegate(this));
+    setStyleSheet("QListWidget { border: none; background: transparent; }");
+
     setSelectionMode(QAbstractItemView::NoSelection);
     setFocusPolicy(Qt::NoFocus);
 
-    // <-- FIX 4: 确保内容变化时自动调整大小
     setResizeMode(QListWidget::Adjust);
+    setSpacing(10);
+
+    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+}
+
+void ChatWidget::clear()
+{
+    m_lastAiMessage.clear();
+    m_lastAiItem = nullptr;
+    QListWidget::clear(); // 调用基类的 clear
 }
 
 void ChatWidget::addMessage(const QString &text, bool isMe)
 {
     bool autoScroll = isAtBottom();
 
+    // 1. 创建文本浏览器 (用于显示 Markdown)
+    QTextBrowser *browser = new QTextBrowser();
+    browser->setReadOnly(true);
+    browser->setOpenExternalLinks(true);
+    browser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);   // 禁用内部滚动条
+    browser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff); // 禁用内部滚动条
+
+    // **关键**: 继承你在 widget.cpp 中设置的字体
+    browser->setFont(this->font());
+
+    if (isMe) {
+        browser->setPlainText(text); // 用户消息显示为纯文本
+    } else {
+        m_lastAiMessage = text; // 存储AI消息
+        browser->setMarkdown(text); // AI 消息渲染为 Markdown
+    }
+
+    // 2. 创建一个容器 QWidget 和一个布局
+    QWidget *container = new QWidget();
+    QHBoxLayout *layout = new QHBoxLayout(container);
+    layout->setContentsMargins(0, 0, 0, 0); // 容器0边距
+
+    // 3. 根据 isMe 设置样式表和对齐方式
+    if (isMe) {
+        // 用户: 气泡绿色, 靠右
+        browser->setStyleSheet(
+            "QTextBrowser {"
+            "  background-color: #F7F7F8;"
+            "  border-radius: 10px;"
+            "  padding: 0px;"
+            "}"
+            );
+        layout->addStretch(1);     // 弹簧在左
+        layout->addWidget(browser, 0, Qt::AlignVCenter);
+    } else {
+        browser->setStyleSheet(
+            "QTextBrowser {"
+            "  background-color: transparent;" // <-- 修改：背景透明
+            "  border: none;"                // <-- 修改：无边框
+            "  padding: 8px;"                // <-- 保留: 内边距，使其与用户消息对齐
+            "}"
+            );
+        layout->addWidget(browser); // 控件在左
+        layout->addStretch(1);     // 弹簧在右
+    }
+    container->setLayout(layout);
+
+
+    // 4. 创建 QListWidgetItem
     QListWidgetItem *item = new QListWidgetItem();
-    item->setData(Qt::DisplayRole, text);
-    item->setData(Qt::UserRole, isMe);  // 用来区分是我还是对方
-    addItem(item);
+    if (!isMe) {
+        m_lastAiItem = item; // 保存对最后 AI item 的引用
+    }
 
+    // ** 解决动态高度的核心 **
+    // 当 browser 的内容改变时 (例如 setMarkdown)，我们调用槽函数更新 item 高度
+    connect(browser->document(), &QTextDocument::contentsChanged, this, [=](){
+        updateItemHeight(item);
+    });
 
+    // 5. 添加到 ListWidget
+    this->addItem(item);
+    this->setItemWidget(item, container); // <-- 使用 setItemWidget
 
+    // 6. 立即更新一次高度
+    updateItemHeight(item);
+
+    // 7. 滚动
     if (autoScroll) {
-        delayedScrollToBottom(); // <-- 使用延迟滚动
+        delayedScrollToBottom();
     }
 
 }
 
 void ChatWidget::appendToLastMessage(const QString &textFragment, bool isMe)
 {
-    bool autoScroll = isAtBottom();
-
-    QListWidgetItem *lastItem = (count() > 0) ? item(count() - 1) : nullptr;
-
-    // 检查最后一条消息是否存在，并且发送者是 AI (isMe == false)
-    if (lastItem && lastItem->data(Qt::UserRole).toBool() == isMe)
-    {
-        // 1. 追加文本
-        QString currentText = lastItem->text();
-        currentText += textFragment;
-        // 使用 setData 而不是 setText，确保模型知道数据已更改
-        lastItem->setData(Qt::DisplayRole, currentText);
-
-        // 2. *** 这是解决“半行字”问题的关键 ***
-        //    强制使 QListWidget 丢弃这个 item 的尺寸缓存
-        //    这样它就会被迫下次重绘时调用 delegate 的 sizeHint()
-        lastItem->setSizeHint(QSize(-1, -1));
-
-        // (可选) 确保该项在视图中是更新的
-        // update(indexFromItem(lastItem));
-    }
-    else
-    {
-        // 如果没有上一条，或者上一条是用户发的，则新建一个 item
+    // 如果是用户消息, 或是第一条 AI 消息, 则调用 addMessage
+    if (isMe || m_lastAiItem == nullptr) {
         addMessage(textFragment, isMe);
         return;
     }
 
+    bool autoScroll = isAtBottom();
+
+    // 1. 找到最后一条 AI 消息的 QListWidgetItem
+    QWidget *container = this->itemWidget(m_lastAiItem);
+    if (!container) return;
+
+    // 2. 从容器中找到 QTextBrowser
+    QTextBrowser *browser = container->findChild<QTextBrowser*>();
+    if (!browser) return;
+
+    // 3. 追加文本
+    m_lastAiMessage += textFragment;
+    browser->setMarkdown(m_lastAiMessage); // 重新设置 *全部* Markdown 文本
+
+    // 4. 滚动
+    // (高度更新会由 contentsChanged 信号自动触发)
     if (autoScroll) {
-        delayedScrollToBottom(); // <-- 使用延迟滚动
+        delayedScrollToBottom();
     }
 }
 
+// 新的槽函数：更新 item 高度
+void ChatWidget::updateItemHeight(QListWidgetItem* item)
+{
+    if (!item) return;
+    QWidget *container = this->itemWidget(item);
+    if (!container) return;
+    QTextBrowser *browser = container->findChild<QTextBrowser*>();
+    if (!browser) return;
+
+    // 1. 获取 ListWidget 的可用宽度 (viewport 宽度减去一点边距)
+    int viewportWidth = this->viewport()->width() - 20;
+    if (viewportWidth <= 0) return; // 窗口还没显示
+
+    // 2. 定义气泡的最大宽度 (例如 70%)
+    int maxWidth = viewportWidth * 0.7;
+
+    // 3. 获取 document
+    QTextDocument *doc = browser->document();
+
+    // 4. *** 关键: 计算理想宽度 ***
+    //    先设置 textWidth 为 -1 (无限宽), 获取内容的 "idealWidth"
+    doc->setTextWidth(-1);
+    int idealWidth = doc->idealWidth();
+
+    // 5. 确定最终宽度
+    //    取 "理想宽度" 和 "最大宽度" 中的较小值
+    int finalWidth = qMin(idealWidth, maxWidth);
+
+    // 6. 告诉 document 按这个最终宽度来换行
+    doc->setTextWidth(finalWidth);
+    QSize docSize = doc->size().toSize(); // 获取换行后的文档大小
+
+    // 7. 获取 QSS 中设置的 padding (8px * 2)
+    int hPadding = 16;
+    int vPadding = 16;
+
+    // 8. *** 关键: 固定 browser 的大小 ***
+    //    这能解决 "用户消息过长" 和 "AI 消息过短" 的所有问题
+    browser->setFixedSize(docSize.width() + hPadding, docSize.height() + vPadding);
+
+    // 9. 设置 QListWidgetItem 的 SizeHint (高度是关键)
+    item->setSizeHint(QSize(viewportWidth, docSize.height() + vPadding));
+}
+
+
+void ChatWidget::resizeEvent(QResizeEvent *event)
+{
+    // 1. 调用基类
+    QListWidget::resizeEvent(event);
+
+    // 2. 延迟更新所有 item 的高度
+    //    使用 QTimer::singleShot(0, ...) 确保在布局都稳定后再执行
+    QTimer::singleShot(0, this, [this](){
+        for(int i = 0; i < this->count(); ++i) {
+            QListWidgetItem *item = this->item(i);
+            // 重新调用我们的计算函数
+            updateItemHeight(item);
+        }
+    });
+}
 
 bool ChatWidget::isAtBottom() const
 {

@@ -5,7 +5,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QSslConfiguration>
-#include "welcomepage.h"
+#include "llmchat.h"
 
 
 class Chat : public QObject
@@ -20,8 +20,7 @@ public:
     // 设置模型配置
     void setModelConfig(const ModelConfig& config);
 
-    // 获取当前模型配置
-    ModelConfig getCurrentModelConfig() const;
+
 
 private slots:
     // 发送消息
@@ -57,6 +56,9 @@ signals:
 
     //收到chatid的信号
      void chatIdReceived(const QString &chatId);
+
+    //流式回复结束时触发
+     void finished();
 
 };
 

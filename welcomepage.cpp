@@ -1,27 +1,17 @@
 #include "welcomepage.h"
 #include "ui_welcomepage.h"
-
-
-
+#include <QGraphicsDropShadowEffect>
+#include <QAction>
 
 
 welcomepage::welcomepage(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::welcomepage)
-    , m_currentModelId("default")
-    , m_currentModelName("交小科")
-    , m_modelImageLabel(nullptr)  // 初始化为nullptr
 {
     ui->setupUi(this);
 
-    // 初始化默认配置
-    m_currentModelConfig.id = "default";
-    m_currentModelConfig.name = "交小科";
-    m_currentModelConfig.displayName = "交小科";
-    m_currentModelConfig.description = "默认AI助手";
-    m_currentModelConfig.themeColor = "#2c3e50";
-    m_currentModelConfig.imagePath = "";
-    m_currentModelConfig.apiKey = "application-4a5b57a1f8e72c81b7fe26194a1243d0"; // 默认API Key
+
+
 
     ui->toggleBtn_2->setVisible(false);
 
@@ -34,14 +24,31 @@ welcomepage::welcomepage(QWidget *parent)
 
     //发送按钮使能
     ui->pushButton->setEnabled(false);
+    ui->pushButton->setIcon(QIcon());
+    ui->pushButton->setStyleSheet(
+        "QPushButton {"
+        "    border-image: url(\"E:/QtProject/LLM/pic/img/切图 72@2x.png\");"
+        "    border-radius: 19px;"
+        "}"
+        );
     connect(ui->textEdit, &QTextEdit::textChanged, this, [this] {
         if(ui->textEdit->document()->isEmpty()){
             ui->pushButton->setEnabled(false);
-            ui->pushButton->setStyleSheet("QPushButton {background-color: rgb(224, 224, 224); color: white;border-radius: 19px}");
+            ui->pushButton->setStyleSheet(
+                "QPushButton {"
+                "    border-image: url(\"E:/QtProject/LLM/pic/img/切图 72@2x.png\");"
+                "    border-radius: 19px;"
+                "}"
+                );
         }
         else{
-            ui->pushButton->setEnabled(!ui->textEdit->document()->isEmpty());
-            ui->pushButton->setStyleSheet("QPushButton { background-color: black; color: white;border-radius: 19px}");
+            ui->pushButton->setEnabled(true);
+            ui->pushButton->setStyleSheet(
+                "QPushButton {"
+                "    border-image: url(\"E:/QtProject/LLM/pic/img/切图 77@2x.png\");"
+                "    border-radius: 19px;"
+                "}"
+                );
         }
     });
 
@@ -56,114 +63,25 @@ welcomepage::welcomepage(QWidget *parent)
     connect(ui->pushButton_3, &QPushButton::clicked, this, &welcomepage::on_pushButton_3_clicked);
     connect(ui->pushButton_2, &QPushButton::clicked, this, &welcomepage::on_pushButton_2_clicked);
 
-    updateWelcomeUI();
 
 
 
-    // 让 toggleBtn 的 y 坐标与 toggleBtn_2 一致
+    //增加搜索按钮
+    QAction *searchAction = new QAction(this);
+    searchAction->setIcon(QIcon(":/pic/img/66@2x.png"));
+    ui->lineEdit->addAction(searchAction, QLineEdit::LeadingPosition);
+
+
 
 }
 
 
-// 设置模型配置
-void welcomepage::setModelConfig(const ModelConfig& config)
-{
-    m_currentModelId = config.id;
-    m_currentModelName = config.displayName.isEmpty() ? config.name : config.displayName;
-
-    m_currentModelConfig = config;
-
-    // 更新UI
-    updateWelcomeUI();
-
-    // 发射配置变化信号
-    emit modelConfigChanged(config);
-
-    // 在header中添加模型图片
-    if (!config.imagePath.isEmpty()) {
-        addModelImageToHeader(config.imagePath);
-    }
-}
 
 
-// 在header中添加模型图片
-void welcomepage::addModelImageToHeader(const QString& imagePath)
-{
-    // 首先移除可能存在的旧图片
-    removeModelImageFromHeader();
-
-    // 创建模型图片标签
-    m_modelImageLabel = new QLabel(this);
-
-    // 加载图片
-    QPixmap pixmap(imagePath);
-    if (pixmap.isNull()) {
-        // 如果图片加载失败，使用默认图片
-        //pixmap = QPixmap("E:\\QtProject\\LLM\\pic\\deepseek-r1_logo-removebg-preview.png");
-
-    }
-
-    // 设置图片大小（根据您的UI调整）
-    //pixmap = pixmap.scaled(200, 80, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-    m_modelImageLabel->setPixmap(pixmap);
-    m_modelImageLabel->setFixedSize(200, 80);
-    m_modelImageLabel->setScaledContents(true);
-
-    // 获取horizontalFrame的布局
-    QHBoxLayout* layout = qobject_cast<QHBoxLayout*>(ui->horizontalFrame->layout());
-    if (layout) {
-        // 在label2后面插入模型图片
-        // 查找label2在布局中的位置
-        int label2Index = layout->indexOf(ui->label_2);
-        if (label2Index >= 0) {
-            // 在label2后面插入模型图片
-            layout->insertWidget(label2Index + 1, m_modelImageLabel);
-
-            // 添加一个小间距
-            layout->insertSpacing(label2Index + 2, 5);
-        }
-    }
-
-    // 显示图片
-    m_modelImageLabel->show();
-}
-
-// 从header中移除模型图片
-void welcomepage::removeModelImageFromHeader()
-{
-    if (m_modelImageLabel) {
-        // 从布局中移除
-        QHBoxLayout* layout = qobject_cast<QHBoxLayout*>(ui->horizontalFrame->layout());
-        if (layout) {
-            layout->removeWidget(m_modelImageLabel);
-        }
-
-        // 删除对象
-        delete m_modelImageLabel;
-        m_modelImageLabel = nullptr;
-    }
-}
 
 
-// 清除模型图片（供外部调用）
-void welcomepage::clearModelImage()
-{
-    removeModelImageFromHeader();
 
 
-    // 重置为默认配置
-    m_currentModelConfig.id = "default";
-    m_currentModelConfig.name = "交小科";
-    m_currentModelConfig.displayName = "交小科";
-    m_currentModelConfig.description = "默认AI助手";
-    m_currentModelConfig.themeColor = "#2c3e50";
-    m_currentModelConfig.imagePath = "";
-    m_currentModelConfig.apiKey = "application-4a5b57a1f8e72c81b7fe26194a1243d0"; // 重置为默认API Key
-
-    // 发射配置变化信号
-    emit modelConfigChanged(m_currentModelConfig);
-}
 
 
 
@@ -334,29 +252,3 @@ void welcomepage::on_toolButton_2_clicked()
 }
 
 
-void welcomepage::on_toolButton_3_clicked()
-{
-    // 清除模型图片，只保留"交小科"
-    clearModelImage();
-
-    // 这里可以添加其他首页相关的逻辑
-    // 例如：重置到默认状态、清除输入等
-}
-
-// 根据当前模型更新欢迎页UI
-void welcomepage::updateWelcomeUI()
-{
-    // 更新发送按钮的提示文本
-    ui->pushButton->setToolTip(QString("给%1发送消息").arg(m_currentModelName));
-
-    // 强制刷新界面
-    this->update();
-}
-
-
-
-// 获取当前模型配置的方法
-ModelConfig welcomepage::getCurrentModelConfig()
-{
-    return m_currentModelConfig;
-}

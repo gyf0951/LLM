@@ -44,7 +44,7 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(235, 235, 235);</string>
+      <string notr="true">background-color: #FFFFFF;</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -58,6 +58,12 @@
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="spacing">
        <number>25</number>
+      </property>
+      <property name="leftMargin">
+       <number>11</number>
+      </property>
+      <property name="rightMargin">
+       <number>11</number>
       </property>
       <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
        <widget class="QPushButton" name="pushButton_4">
@@ -82,8 +88,8 @@ border-radius: 8px;
          <string/>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/pic/avatar_person_user_icon_250196.png</normaloff>:/pic/avatar_person_user_icon_250196.png</iconset>
+         <iconset resource="resource.qrc">
+          <normaloff>:/pic/20250815090415.png</normaloff>:/pic/20250815090415.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -97,20 +103,37 @@ border-radius: 8px;
        <widget class="QToolButton" name="toolButton_3">
         <property name="minimumSize">
          <size>
-          <width>53</width>
-          <height>51</height>
+          <width>55</width>
+          <height>65</height>
          </size>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="styleSheet">
          <string notr="true">/* border: 1px solid #999; */
-border-radius: 8px;</string>
+QToolButton {
+    /* * 正常状态：
+     * 1. 背景色设为透明
+     * 2. 移除默认边框
+     */
+    background-color: transparent;
+    border: none;
+    border-radius: 8px; /* 保留您的圆角 */
+	padding-top: 5px;
+}
+QToolButton:hover {
+    background-color: #EBEBEB;
+border: 1px solid #CCCCCC;
+padding-top: 5px;
+}</string>
         </property>
         <property name="text">
          <string>首页</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/pic/loupe_78956.png</normaloff>:/pic/loupe_78956.png</iconset>
+         <iconset resource="resource.qrc">
+          <normaloff>:/pic/img/切图 79@2x.png</normaloff>:/pic/img/切图 79@2x.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -123,24 +146,38 @@ border-radius: 8px;</string>
         </property>
        </widget>
       </item>
-      <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+      <item>
        <widget class="QToolButton" name="toolButton">
         <property name="minimumSize">
          <size>
-          <width>53</width>
-          <height>51</height>
+          <width>55</width>
+          <height>65</height>
          </size>
         </property>
         <property name="styleSheet">
          <string notr="true">/* border: 1px solid #999; */
-border-radius: 8px;</string>
+QToolButton {
+    /* * 正常状态：
+     * 1. 背景色设为透明
+     * 2. 移除默认边框
+     */
+    background-color: transparent;
+    border: none;
+    border-radius: 8px; /* 保留您的圆角 */
+	padding-top: 5px;
+}
+QToolButton:hover {
+    background-color: #EBEBEB;
+border: 1px solid #CCCCCC;
+padding-top: 5px;
+}</string>
         </property>
         <property name="text">
          <string>大模型</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/pic/product_icon_238243.png</normaloff>:/pic/product_icon_238243.png</iconset>
+         <iconset resource="resource.qrc">
+          <normaloff>:/pic/img/切图 59@2x.png</normaloff>:/pic/img/切图 59@2x.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -157,22 +194,28 @@ border-radius: 8px;</string>
        <widget class="QToolButton" name="toolButton_2">
         <property name="minimumSize">
          <size>
-          <width>53</width>
-          <height>51</height>
+          <width>55</width>
+          <height>65</height>
          </size>
         </property>
         <property name="styleSheet">
          <string notr="true">/* border: 1px solid #999; */
+/*background-color: #0076FF;  */
 border-radius: 8px;
-
-background-color: rgb(255, 255, 255);</string>
+ background: qlineargradient( 
+x1:0, y1:0, x2:0, y2:1,             /* 从上到下渐变 */  
+stop:0 rgba(0, 118, 255, 255),     /* 顶部：#0076FF，不透明 */ 
+ stop:1 rgba(0, 118, 255, 178)      /* 底部：#0076FF，约70%不透明 */ 
+     );
+color: white;
+padding-top: 5px;</string>
         </property>
         <property name="text">
          <string>智能体</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/pic/1492719128-robot_83633.png</normaloff>:/pic/1492719128-robot_83633.png</iconset>
+         <iconset resource="resource.qrc">
+          <normaloff>:/pic/img/切图 91@2x.png</normaloff>:/pic/img/切图 91@2x.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -189,20 +232,34 @@ background-color: rgb(255, 255, 255);</string>
        <widget class="QToolButton" name="toolButton_4">
         <property name="minimumSize">
          <size>
-          <width>53</width>
-          <height>51</height>
+          <width>55</width>
+          <height>65</height>
          </size>
         </property>
         <property name="styleSheet">
          <string notr="true">/* border: 1px solid #999; */
-border-radius: 8px;</string>
+QToolButton {
+    /* * 正常状态：
+     * 1. 背景色设为透明
+     * 2. 移除默认边框
+     */
+    background-color: transparent;
+    border: none;
+    border-radius: 8px; /* 保留您的圆角 */
+	padding-top: 5px;
+}
+QToolButton:hover {
+    background-color: #EBEBEB;
+border: 1px solid #CCCCCC;
+padding-top: 5px;
+}</string>
         </property>
         <property name="text">
          <string>知识库</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/pic/lightbulb_shine_icon_232460.png</normaloff>:/pic/lightbulb_shine_icon_232460.png</iconset>
+         <iconset resource="resource.qrc">
+          <normaloff>:/pic/img/切图 60@2x.png</normaloff>:/pic/img/切图 60@2x.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -219,20 +276,34 @@ border-radius: 8px;</string>
        <widget class="QToolButton" name="toolButton_5">
         <property name="minimumSize">
          <size>
-          <width>53</width>
-          <height>51</height>
+          <width>55</width>
+          <height>65</height>
          </size>
         </property>
         <property name="styleSheet">
          <string notr="true">/* border: 1px solid #999; */
-border-radius: 8px;</string>
+QToolButton {
+    /* * 正常状态：
+     * 1. 背景色设为透明
+     * 2. 移除默认边框
+     */
+    background-color: transparent;
+    border: none;
+    border-radius: 8px; /* 保留您的圆角 */
+	padding-top: 5px;
+}
+QToolButton:hover {
+    background-color: #EBEBEB;
+border: 1px solid #CCCCCC;
+padding-top: 5px;
+}</string>
         </property>
         <property name="text">
          <string>AI写作</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/pic/creative_design_draw_illustration_pen_pencil_write_icon_123895.png</normaloff>:/pic/creative_design_draw_illustration_pen_pencil_write_icon_123895.png</iconset>
+         <iconset resource="resource.qrc">
+          <normaloff>:/pic/img/切图 62@2x.png</normaloff>:/pic/img/切图 62@2x.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -249,20 +320,34 @@ border-radius: 8px;</string>
        <widget class="QToolButton" name="toolButton_6">
         <property name="minimumSize">
          <size>
-          <width>53</width>
-          <height>51</height>
+          <width>55</width>
+          <height>65</height>
          </size>
         </property>
         <property name="styleSheet">
          <string notr="true">/* border: 1px solid #999; */
-border-radius: 8px;</string>
+QToolButton {
+    /* * 正常状态：
+     * 1. 背景色设为透明
+     * 2. 移除默认边框
+     */
+    background-color: transparent;
+    border: none;
+    border-radius: 8px; /* 保留您的圆角 */
+	padding-top: 5px;
+}
+QToolButton:hover {
+    background-color: #EBEBEB;
+border: 1px solid #CCCCCC;
+padding-top: 5px;
+}</string>
         </property>
         <property name="text">
          <string>AI视频</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/pic/movie_camera_recorder_video_icon_229483.png</normaloff>:/pic/movie_camera_recorder_video_icon_229483.png</iconset>
+         <iconset resource="resource.qrc">
+          <normaloff>:/pic/img/切图 63@2x.png</normaloff>:/pic/img/切图 63@2x.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -337,7 +422,7 @@ border-radius: 8px;</string>
        <string>新建对话</string>
       </property>
       <property name="icon">
-       <iconset>
+       <iconset resource="resource.qrc">
         <normaloff>:/pic/4115237-add-plus_114047.png</normaloff>:/pic/4115237-add-plus_114047.png</iconset>
       </property>
       <property name="iconSize">
@@ -378,8 +463,8 @@ border-radius: 8px;</string>
        <string>...</string>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>:/pic/sidebar_120462.png</normaloff>:/pic/sidebar_120462.png</iconset>
+       <iconset resource="resource.qrc">
+        <normaloff>:/pic/img/切图 65@2x.png</normaloff>:/pic/img/切图 65@2x.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -423,6 +508,9 @@ border-radius: 8px;</string>
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <property name="topMargin">
+       <number>8</number>
+      </property>
       <item>
        <widget class="QFrame" name="frame_5">
         <property name="minimumSize">
@@ -462,8 +550,8 @@ border-radius: 8px;</string>
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/pic/sidebar_120462.png</normaloff>:/pic/sidebar_120462.png</iconset>
+          <iconset resource="resource.qrc">
+           <normaloff>:/pic/img/切图 65@2x.png</normaloff>:/pic/img/切图 65@2x.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -553,7 +641,7 @@ background: #F8F8F8; </string>
 </string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="resource.qrc">
             <normaloff>:/pic/iconfinder-audio-wave-music-sound-speaker-4593201_122274.png</normaloff>:/pic/iconfinder-audio-wave-music-sound-speaker-4593201_122274.png</iconset>
           </property>
           <property name="iconSize">
@@ -576,6 +664,8 @@ background: #F8F8F8; </string>
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
  <connections/>
 </ui>

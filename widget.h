@@ -13,6 +13,7 @@
 #include <QGuiApplication>
 #include "Chat.h"
 #include "welcomepage.h"
+#include "HistoryUploader.h"
 #include <QStackedWidget>
 #include <QProcess>
 #include <QFileInfo>
@@ -53,7 +54,9 @@ signals:
     void newSessionCreated(const QString &id);
 
 public slots:
-    void receiveMessageFromWelcome(const QString &msg);
+    void receiveMessageFromWelcome(const QString &msg);  //从welcomepage接收消息
+
+    void receiveMessageFromLLM(const QString &msg);  //从LLMChat接收消息
 
     void onNewChatClicked();   //新建新会话
     void onSessionSelected(QListWidgetItem *item); // 切换历史会话
@@ -61,6 +64,8 @@ public slots:
 private:
     bool eventFilter(QObject *obj, QEvent *ev) override;
     void resizeEvent(QResizeEvent *event) override;
+
+    HistoryUploader *uploader; //上传历史记录的指针
 
 
 
@@ -82,5 +87,10 @@ private:
 
     QVector<ChatSession> sessions; // 所有会话
     QString currentSessionId;      // 当前会话 id
+
+    QString before; //发送消息的时间
+    QString w_msg; //从welcomepage里收到的消息
+
+    QString currentAnswerBuffer;  // 用于临时拼接完整回复
 };
 #endif // WIDGET_H

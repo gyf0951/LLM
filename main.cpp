@@ -48,16 +48,13 @@ int main(int argc, char *argv[])
 
         LLMChat *llm = new LLMChat();
 
+        static bool firstEnterLLM = true;  // 定义一个静态变量，用于标记是否是第一次进入 LLMChat
 
 
-        llm->setWelcomePage(welcomePage);
 
         chat_model_key->getProfile();
 
-        QObject::connect(welcomePage, &welcomepage::modelConfigChanged,
-                         chat_model_key, [=](const ModelConfig& config) {
-                            chat_model_key->setModelConfig(config);
-                         });
+
 
 
         stackedWidget->addWidget(welcomePage); // index 0  首页
@@ -93,6 +90,17 @@ int main(int argc, char *argv[])
         {
             QObject::connect(btnHome, &QToolButton::clicked, stackedWidget, [=]() {
                 stackedWidget->setCurrentIndex(0);
+
+                ModelConfig defaultConfig;
+
+                defaultConfig.id = "jxk";
+                defaultConfig.name = "jxk";
+                defaultConfig.displayName = "jxk";
+                defaultConfig.description = "jxk";
+                defaultConfig.themeColor = "#FF5722";
+                defaultConfig.apiKey = "application-4a5b57a1f8e72c81b7fe26194a1243d0";
+
+                emit llm->modelConfigChanged(defaultConfig);
             });
         }
 
@@ -121,6 +129,14 @@ int main(int argc, char *argv[])
         {
             QObject::connect(btnhome, &QToolButton::clicked, stackedWidget, [=]() {
                 stackedWidget->setCurrentIndex(3);
+                if (firstEnterLLM) {
+                    //  第一次进入时默认 DeepSeek R1
+                    QMetaObject::invokeMethod(llm, "on_toolButton_10_clicked", Qt::QueuedConnection);
+                    firstEnterLLM = false;
+                } else {
+                    //  之后进入时应用上次选中的模型
+                    llm->applyCurrentModel();
+                }
             });
         }
 
@@ -130,6 +146,17 @@ int main(int argc, char *argv[])
         {
             QObject::connect(btnllm, &QToolButton::clicked, stackedWidget, [=]() {
                 stackedWidget->setCurrentIndex(0);
+
+                ModelConfig defaultConfig;
+
+                defaultConfig.id = "jxk";
+                defaultConfig.name = "jxk";
+                defaultConfig.displayName = "jxk";
+                defaultConfig.description = "jxk";
+                defaultConfig.themeColor = "#FF5722";
+                defaultConfig.apiKey = "application-4a5b57a1f8e72c81b7fe26194a1243d0";
+
+                emit llm->modelConfigChanged(defaultConfig);
             });
         }
 
@@ -146,7 +173,6 @@ int main(int argc, char *argv[])
         QToolButton *btnagent = agent->findChild<QToolButton*>("toolButton");
         if(btnagent)
         {
-            qDebug()<<"hhh";
             QObject::connect(btnagent, &QToolButton::clicked, stackedWidget, [=]() {
                 stackedWidget->setCurrentIndex(3);
             });
@@ -171,102 +197,20 @@ int main(int argc, char *argv[])
                              chatPage->receiveMessageFromWelcome(msg);
                              stackedWidget->setCurrentIndex(1);
                          });
+
+        QObject::connect(llm, &LLMChat::sendMessageToChatPage,
+                         chatPage, [=](const QString &msg) {
+                             chatPage->receiveMessageFromLLM(msg);
+                             stackedWidget->setCurrentIndex(1);
+                         });
+
+        // LLMChat 模型切换 -> Chat 更新配置
+        QObject::connect(llm, &LLMChat::modelConfigChanged,
+                         chat_model_key, &Chat::setModelConfig);
     });
 
-   // // 创建页面
-   //  welcomepage *welcomePage = new welcomepage();
-   //  Widget *chatPage = new Widget();
-   //  loginPage *login = new loginPage();
 
 
-   // // 创建stackedWidget
-   //  QStackedWidget *stackedWidget = new QStackedWidget();
-   //  stackedWidget->addWidget(login) ;       // index 0
-   //  stackedWidget->addWidget(welcomePage); // index 1
-   //  stackedWidget->addWidget(chatPage);    // index 2
-
-
-   //  stackedWidget->setFixedSize(login->size());
-
-
-   // // 默认显示欢迎页
-   //  stackedWidget->setCurrentIndex(0);
-
-   // // 页面切换时调整窗口大小
-   //  QObject::connect(stackedWidget, &QStackedWidget::currentChanged,stackedWidget,
-   //                   [=](int index) {
-   //                       QWidget *page = stackedWidget->widget(index);
-   //                       if (page) {
-   //                           QSize pageSize = page->size();
-   //                           // 先调整大小
-   //                           stackedWidget->resize(pageSize);
-   //                           // 再强制限制窗口大小，避免自动拉伸
-   //                           stackedWidget->setMinimumSize(pageSize);
-   //                           stackedWidget->setMaximumSize(pageSize);
-   //                       }
-   //                   });
-
-
-
-   //  QPushButton *loginBtn = login->findChild<QPushButton*>("pushButton");
-   //  QLineEdit *accountEdit = login->findChild<QLineEdit*>("lineEdit_2");
-   //  QLineEdit *passwordEdit = login->findChild<QLineEdit*>("lineEdit");
-   //  QLabel *accountErrorLabel = login->findChild<QLabel*>("label_5");
-   //  accountErrorLabel->setVisible(false);
-
-   //  QObject::connect(loginBtn, &QPushButton::clicked, [=]() {
-   //      // 账号密码验证
-   //      QString account = accountEdit->text().trimmed();
-   //      QString password = passwordEdit->text();
-
-   //       accountErrorLabel->setVisible(false);
-
-   //      // 手机号正则
-   //      QRegularExpression regex("^1[3-9]\\d{9}$");
-   //      bool accountValid = regex.match(account).hasMatch();
-
-   //      if (!accountValid){
-   //          accountErrorLabel->setVisible(true);
-   //          accountEdit->setStyleSheet("QLineEdit {"
-   //                                     "    background-color: rgb(247, 249, 250);"
-   //                                     "    border-radius: 25px;"
-   //                                     "    border: 1px solid red;"   // 改成红色边框
-   //                                     "    padding: 10px;"
-   //                                     "}"
-   //                                     "QLineEdit QScrollBar { width: 0; height: 0; }");
-   //          return;
-   //      }
-
-   //      if (password != "Nxjk@0951"){
-   //          QMessageBox::warning(login, QStringLiteral("登录失败"),  QStringLiteral("密码错误！"));
-   //          return;
-   //      }
-
-   //      stackedWidget->setCurrentIndex(1); // 登录成功进入欢迎页
-   //  });
-
-   //  QPushButton *btn = welcomePage->findChild<QPushButton*>("pushButton");
-   //  QObject::connect(btn, &QPushButton::clicked,stackedWidget, [=]() {
-   //      stackedWidget->setCurrentIndex(2);
-   //  });
-   //  QObject::connect(welcomePage, &welcomepage::sendMessageToChatPage,
-   //                   chatPage, [=](const QString &msg){
-
-   //      chatPage->receiveMessageFromWelcome(msg);
-
-   //      stackedWidget->setCurrentIndex(2);
-   //  });
-
-
-   //  stackedWidget->setWindowTitle("交小科");
-   //  QIcon con("E:\\QtProject\\LLM\\pic\\20250815090415.png");
-   //  stackedWidget->setWindowIcon(con);
-
-
-   //  //stackedWidget->resize(login->size());
-   //  stackedWidget->adjustSize();
-
-   //  stackedWidget->show();
 
     return a.exec();
 }

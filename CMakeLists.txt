@@ -8,6 +8,7 @@ list(APPEND CMAKE_PREFIX_PATH "F:/Qt/6.5.3/mingw_64/lib/cmake")
 find_package(Qt6 COMPONENTS Widgets Network Multimedia REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -34,7 +35,9 @@ add_executable(${PROJECT_NAME} ${FILES}
         loginpage.h loginpage.cpp loginpage.ui
         agent.h agent.cpp agent.ui
         meetingassistantdialog.h meetingassistantdialog.cpp meetingassistantdialog.ui
-        llmchat.h llmchat.cpp llmchat.ui)
+        llmchat.h llmchat.cpp llmchat.ui
+        temp.ui
+        historyuploader.h historyuploader.cpp)
 
 
 
@@ -66,3 +69,4 @@ target_include_directories(LLM PRIVATE
 
 # 4. 库照旧
 target_link_libraries(LLM PRIVATE "${CMARK_INC_GEN}/libcmark-gfm.a")
+target_link_libraries(LLM PRIVATE Qt6::Core Qt6::Widgets)

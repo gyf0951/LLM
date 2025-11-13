@@ -46,11 +46,7 @@ void Chat::setModelConfig(const ModelConfig& config)
 }
 
 
-// 获取当前模型配置
-ModelConfig Chat::getCurrentModelConfig() const
-{
-    return m_currentModelConfig;
-}
+
 
 
 void Chat::sendMessage(const QString &userMessage)
@@ -111,7 +107,6 @@ void Chat::sendMessage(const QString &userMessage)
                         if (obj.contains("content")) {
                             QString content = obj["content"].toString();
                             if (!content.isEmpty()) {
-                                // 发出流式片段信号
                                 emit messageReceived(content);
                             }
                         }
@@ -129,6 +124,7 @@ void Chat::sendMessage(const QString &userMessage)
             emit errorOccurred(reply->errorString());
         } else {
             qDebug() << "流式消息传输完成";
+            emit finished();
         }
         reply->deleteLater();
     });
