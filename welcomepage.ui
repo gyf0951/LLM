@@ -509,6 +509,44 @@ padding-top: 5px;
         </size>
        </property>
       </widget>
+      <widget class="QListWidget" name="historyListWidget">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>101</y>
+         <width>221</width>
+         <height>621</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QListWidget {
+    background-color: #f8f9fa;
+    border: none;
+    border-radius: 8px;
+    padding: 5px;
+    font-family: 'Microsoft YaHei';
+    font-size: 13px;
+}
+
+QListWidget::item {
+    background-color: white;
+    border-radius: 6px;
+    padding: 12px;
+    margin: 4px 2px;
+    border: 1px solid #e0e0e0;
+}
+
+QListWidget::item:hover {
+    background-color: #e3f2fd;
+    border-color: #2196f3;
+}
+
+QListWidget::item:selected {
+    background-color: #bbdefb;
+    border-color: #1976d2;
+}</string>
+       </property>
+      </widget>
      </widget>
     </widget>
    </item>

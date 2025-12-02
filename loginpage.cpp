@@ -80,7 +80,7 @@ void loginPage::paintEvent(QPaintEvent *event)
 
 void loginPage::Loginaccount()
 {
-    QString account = ui->accountEdit->text().trimmed();
+    account = ui->accountEdit->text().trimmed();
     QString password = ui->passwordEdit->text();
 
     ui->label_5->setVisible(false);

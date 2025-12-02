@@ -106,9 +106,6 @@ void HistoryUploader::fetchRecords(const QString &userId)
         }
 
         emit recordsFetched(recordList);
-        for (const QVariantMap &rec : recordList) {
-            qDebug() << rec;
-        }
         reply->deleteLater();
         });
 }

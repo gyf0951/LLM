@@ -136,8 +136,7 @@ Widget::Widget(Chat *chatInstance,QWidget *parent)
         qDebug() << "历史记录上传失败 " << err;
     });
 
-    //获取历史记录
-    uploader->fetchRecords("13299501181");
+
 
 }
 

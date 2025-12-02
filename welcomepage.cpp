@@ -7,6 +7,7 @@
 welcomepage::welcomepage(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::welcomepage)
+    ,historyUploader(new HistoryUploader(this))
 {
     ui->setupUi(this);
 
@@ -72,19 +73,20 @@ welcomepage::welcomepage(QWidget *parent)
     ui->lineEdit->addAction(searchAction, QLineEdit::LeadingPosition);
 
 
+    // ===== 初始化历史记录控件 =====
+    setupHistoryListWidget();
+
+    // 连接历史记录信号
+    connect(historyUploader, &HistoryUploader::recordsFetched,
+            this, &welcomepage::onRecordsFetched);
+    connect(historyUploader, &HistoryUploader::fetchFailed,
+            this, &welcomepage::onFetchFailed);
+
+    // 当用户点击历史记录列表项时，调用onHistoryItemClicked处理
+    connect(ui->historyListWidget, &QListWidget::itemClicked,
+            this, &welcomepage::onHistoryItemClicked);
 
 }
-
-
-
-
-
-
-
-
-
-
-
 
 //设置按钮位置
 void welcomepage::resizeEvent(QResizeEvent *event)
@@ -251,4 +253,201 @@ void welcomepage::on_toolButton_2_clicked()
 
 }
 
+// 初始化历史记录列表控件样式
+void welcomepage::setupHistoryListWidget()
+{
+    ui->historyListWidget->setStyleSheet(
+        // 列表整体样式
+        "QListWidget {"
+        "    background-color: #f8f9fa;"      // 浅灰色背景
+        "    border: none;"                   // 无边框
+        "    border-radius: 8px;"             // 圆角
+        "    padding: 5px;"                   // 内边距
+        "    font-family: 'Microsoft YaHei';" // 字体
+        "    font-size: 13px;"                // 字体大小
+        "}"
+        // 列表项（每条历史记录）的默认样式
+        "QListWidget::item {"
+        "    background-color: white;"        // 白色背景
+        "    border-radius: 6px;"             // 圆角
+        "    padding: 12px;"                  // 内边距（上下左右12像素）
+        "    margin: 4px 2px;"                // 外边距（上下4px，左右2px）
+        "    border: 1px solid #e0e0e0;"      // 浅灰色边框
+        "}"
+        // 鼠标悬停时的样式
+        "QListWidget::item:hover {"
+        "    background-color: #e3f2fd;"      // 浅蓝色背景
+        "    border-color: #2196f3;"          // 蓝色边框
+        "}"
+        // 选中状态的样式
+        "QListWidget::item:selected {"
+        "    background-color: #bbdefb;"      // 深蓝色背景
+        "    border-color: #1976d2;"          // 深蓝色边框
+        "}"
+        // ===== 滚动条样式（垂直方向） =====
+        "QScrollBar:vertical {"
+        "    background-color: #f8f9fa;"      // 滚动条背景色
+        "    width: 10px;"                    // 滚动条宽度
+        "    border-radius: 5px;"             // 圆角
+        "    margin: 0px;"                    // 无边距
+        "}"
+        // 滚动条滑块样式
+        "QScrollBar::handle:vertical {"
+        "    background-color: #c0c0c0;"      // 滑块颜色（灰色）
+        "    border-radius: 5px;"             // 圆角
+        "    min-height: 20px;"               // 最小高度
+        "}"
+        // 滚动条滑块悬停样式
+        "QScrollBar::handle:vertical:hover {"
+        "    background-color: #a0a0a0;"      // 悬停时变深灰
+        "}"
+        // 隐藏滚动条的上下箭头按钮
+        "QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {"
+        "    height: 0px;"                    // 高度为0，即隐藏
+        "}"
+        // 滚动条空白区域（滑块上下的空白部分）
+        "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {"
+        "    background: none;"               // 透明背景
+        "}"
+        );
+    // 设置其他属性
+    ui->historyListWidget->setSpacing(2); // 列表项之间的间距
+    ui->historyListWidget->setAlternatingRowColors(false); // 不使用交替行颜色
+    ui->historyListWidget->setSelectionMode(QAbstractItemView::SingleSelection);  // 单选模式
 
+
+    // ----- 设置滚动行为 -----
+    ui->historyListWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);  // 平滑滚动（按像素）
+    ui->historyListWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);      // 禁用水平滚动条
+}
+
+// 加载历史记录
+void welcomepage::loadHistoryRecords(const QString &userId)
+{
+    currentUserId = userId;
+    ui->historyListWidget->clear();
+
+    // 显示加载提示
+    QListWidgetItem *loadingItem = new QListWidgetItem("⏳ 正在加载历史记录...");
+    loadingItem->setTextAlignment(Qt::AlignCenter);
+    loadingItem->setFlags(Qt::NoItemFlags); // 不可选中
+    loadingItem->setForeground(QColor("#666666"));
+    ui->historyListWidget->addItem(loadingItem);
+
+    // 请求历史记录
+    historyUploader->fetchRecords(userId);
+
+    qDebug() << "📡 正在请求用户历史记录:" << userId;
+}
+
+// 处理获取到的历史记录
+void welcomepage::onRecordsFetched(const QList<QVariantMap> &records)
+{
+    ui->historyListWidget->clear();
+
+    if (records.isEmpty()) {
+        QListWidgetItem *emptyItem = new QListWidgetItem("💬 暂无聊天记录");
+        emptyItem->setTextAlignment(Qt::AlignCenter);
+        emptyItem->setForeground(QColor("#999999"));
+        emptyItem->setFlags(Qt::NoItemFlags);
+        ui->historyListWidget->addItem(emptyItem);
+        qDebug() << "📭 历史记录为空";
+        return;
+    }
+
+    // 按时间倒序排列（最新的在上面）
+    QList<QVariantMap> sortedRecords = records;
+    std::sort(sortedRecords.begin(), sortedRecords.end(),
+              [](const QVariantMap &a, const QVariantMap &b) {
+                  return a["question_time"].toString() > b["question_time"].toString();
+              });
+
+    // 添加历史记录项
+    for (const QVariantMap &record : sortedRecords) {
+        addHistoryItem(record);
+    }
+
+    qDebug() << "✅ 成功加载" << records.size() << "条历史记录";
+}
+
+// 添加单条历史记录到列表
+void welcomepage::addHistoryItem(const QVariantMap &record)
+{
+    QString question = record["question"].toString();
+    QString questionTime = record["question_time"].toString();
+    QString modelType = record["model_type"].toString();
+
+    // 限制显示长度
+    QString displayQuestion = question;
+    if (displayQuestion.length() > 45) {
+        displayQuestion = displayQuestion.left(45) + "...";
+    }
+
+    // 格式化时间
+    QDateTime dt = QDateTime::fromString(questionTime, Qt::ISODate);
+    QString timeStr;
+
+    // 判断是否是今天
+    QDate today = QDate::currentDate();
+    if (dt.date() == today) {
+        timeStr = "今天 " + dt.toString("hh:mm");
+    } else if (dt.date() == today.addDays(-1)) {
+        timeStr = "昨天 " + dt.toString("hh:mm");
+    } else {
+        timeStr = dt.toString("MM-dd hh:mm");
+    }
+
+    // 创建列表项
+    QListWidgetItem *item = new QListWidgetItem();
+
+    // 显示格式: 问题预览 + 时间 + 模型
+    QString displayText = QString("%1\n%2 · %3")
+                              .arg(displayQuestion)
+                              .arg(timeStr);
+                              //.arg(modelType.isEmpty() ? "AI助手" : modelType);
+
+    item->setText(displayText);
+    item->setData(Qt::UserRole, record); // 存储完整数据
+    item->setToolTip(question); // 鼠标悬停显示完整问题
+
+    ui->historyListWidget->addItem(item);
+}
+
+
+// 处理历史记录获取失败
+void welcomepage::onFetchFailed(const QString &error)
+{
+    ui->historyListWidget->clear();
+
+    QListWidgetItem *errorItem = new QListWidgetItem("❌ 加载失败\n" + error);
+    errorItem->setTextAlignment(Qt::AlignCenter);
+    errorItem->setForeground(QColor("#f44336"));
+    errorItem->setFlags(Qt::NoItemFlags);
+    ui->historyListWidget->addItem(errorItem);
+
+    qDebug() << "❌ 获取历史记录失败:" << error;
+}
+
+
+// 用户点击历史记录列表项
+void welcomepage::onHistoryItemClicked(QListWidgetItem *item)
+{
+    // ----- 从item中取出存储的完整记录数据 -----
+    // 现在用data(Qt::UserRole)取出来
+    QVariantMap record = item->data(Qt::UserRole).toMap();
+
+    // 检查数据是否有效（某些提示项如"加载中"没有数据）
+    if (record.isEmpty()) {
+        return;  // 无数据则直接返回
+    }
+
+    // ----- 发射信号，通知其他组件用户点击了历史记录 -----
+    emit historyItemClicked(record);  // 传递完整的记录数据
+
+    QString question = record["question"].toString();
+    ui->textEdit->setPlainText(question);  // 显示在文本框中，用户可以再次编辑发送
+
+    // 输出调试信息
+    qDebug() << "📌 点击历史记录 ID:" << record["id"].toString();
+    qDebug() << "   问题:" << question;
+}

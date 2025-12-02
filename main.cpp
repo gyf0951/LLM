@@ -69,6 +69,20 @@ int main(int argc, char *argv[])
         stackedWidget->setWindowIcon(con);
         stackedWidget->show();
 
+
+        //加载历史记录
+        welcomePage->loadHistoryRecords(login.account);
+
+        // 监听点击事件
+        QObject::connect(welcomePage, &welcomepage::historyItemClicked,
+                welcomePage, [welcomePage](const QVariantMap &record) {
+                    qDebug() << "完整问题:" << record["question"];
+                    qDebug() << "完整回答:" << record["answer"];
+                    qDebug() << "记录ID:" << record["id"];
+
+                    // 可以跳转到聊天页面并显示这条对话
+                });
+
         // 首页 -> 聊天页
         QPushButton *btn = welcomePage->findChild<QPushButton*>("pushButton");
         QObject::connect(btn, &QPushButton::clicked, stackedWidget, [=]() {

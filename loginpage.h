@@ -24,6 +24,8 @@ public:
     explicit loginPage(QWidget *parent = nullptr);
     ~loginPage();
 
+    QString account; //存储用户账号
+
 signals:
     void loginSuccess();
 
